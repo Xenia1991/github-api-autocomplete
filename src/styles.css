@@ -1,0 +1,23 @@
+.app-container {
+    margin: 0 auto;
+    width: 660px;
+    height: 760px;
+    box-sizing: border-box;
+    background-color: #C4C4C4;
+    border-radius: 5px;
+    padding: 62px;
+}
+
+.searching-container {
+    width: 100%;
+    height: 100%;
+}
+
+.searching-container__input {
+    width: 100%;
+    margin: 0 auto;
+    border: none;
+    line-height: 50px;
+    font-size: 40px;
+    padding: 5px 15px;
+}
