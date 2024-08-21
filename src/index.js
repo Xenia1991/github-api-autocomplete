@@ -1,9 +1,42 @@
+const appContainer = document.querySelector('.app-container');
+const form = document.querySelector('.searching-form');
+const input = form.querySelector('.searching-form__input');
 
-async function getValue () {
-    const value = await document.querySelector('#input-id').value;
-    console.log(value);
+function debouncingInput (fn, debounceTime) {
+    let timeout;
+    return function () {
+        const event = () => {fn.apply(this, arguments)};
+        clearTimeout(timeout);
+        timeout = setTimeout(event, debounceTime);
+    }
 }
 
-getValue();
+async function getValue () {
+    const queryValue = `q=${input.value}&per_page=5`;
+    const respond = await fetch(`https://api.github.com/search/repositories?${queryValue}`);
+        if (respond.ok) {
+            const users = await respond.json();
+            console.log(users);
+            // users.items.map((item) => {
+            // console.log(item);
+            // createListItem(item.login);
+            // });
+    }
 
-// обернуть обращение к value внутрь обработчика события change, и туда же нужен дебаунс
+}
+
+const debouncingValue = debouncingInput(getValue, 1000);
+
+function createListItem (obj) {
+    const list = document.createElement('ul');
+    list.classList.add('respond-container');
+    const listItem = document.createElement('li');
+    listItem.classList.add('respond-container__item');
+    listItem.textContent = obj;
+    list.appendChild(listItem);
+    appContainer.appendChild(list);
+}
+
+// createList();
+input.addEventListener('input', debouncingValue);
+
