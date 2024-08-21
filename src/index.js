@@ -16,11 +16,9 @@ async function getValue () {
     const respond = await fetch(`https://api.github.com/search/repositories?${queryValue}`);
         if (respond.ok) {
             const users = await respond.json();
-            console.log(users);
-            // users.items.map((item) => {
-            // console.log(item);
-            // createListItem(item.login);
-            // });
+            users.items.map((item) => {
+                createListItem(item.name);
+        });
     }
 
 }
