@@ -1,18 +1,15 @@
 const appContainer = document.querySelector('.app-container');
 const form = document.querySelector('.searching-form');
 const input = form.querySelector('.searching-form__input');
+const respondList = document.querySelector('.respond-container');
 const resultSection = document.querySelector('.repos-container');
 
-
 function createListItem (item) {
-    const list = document.createElement('ul');
-    list.classList.add('respond-container');
     const listItem = document.createElement('li');
     listItem.classList.add('respond-container__item');
     listItem.textContent = item;
-    list.append(listItem);
-    form.append(list);
-    return list;
+    respondList.append(listItem);
+    return respondList;
 }
 
 function createReposList (item) {
@@ -55,10 +52,17 @@ function debouncingInput (fn, debounceTime) {
 }
 
 function selectMenuItem (event) {
-    // const target = event.target;
-    console.log(event.target);
-    
-
+    const target = event.target;
+    console.log(target);
+    console.log(event);
+    if (target.tagName !== 'LI') {
+        return;
+    }
+    if (this.name === target.textContent) {
+        createReposList(this);
+        input.value = null;
+        respondList.setAttribute('data-hide', 'hidden');
+    }
 }
 
 async function getValue () {
@@ -69,10 +73,15 @@ async function getValue () {
         console.log(repos.items);
         repos.items.forEach((item) => {
             createListItem(item.name);
-        }); 
+        });
         const selectMenu = document.querySelector('.respond-container');
-        console.log(selectMenu);
-        selectMenu.addEventListener('click', selectMenuItem);
+        repos.items.forEach((item) => {
+            console.log(item);  
+            selectMenu.addEventListener('click', selectMenuItem.bind(item));
+            respondList.removeAttribute('data-hide');
+        });
+        
+
     }
 }
 
