@@ -80,6 +80,9 @@ function debouncingInput (fn, debounceTime) {
 }
 
 async function getValue () {
+    if (!input.value.trim()) {
+        return;
+    }
     const queryValue = `q=${input.value.trim()}&per_page=5`;
     const respond = await fetch(`https://api.github.com/search/repositories?${queryValue}`);
     const repos = await respond.json();
