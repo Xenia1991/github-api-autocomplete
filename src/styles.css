@@ -85,7 +85,7 @@
     width: 70px;
     height: 70px;
     background-color: transparent;
-    background-image: url('/assets/close.png');
+    background-image: url('../assets/close.png');
     background-size: cover;
     transition-duration: 400ms;
 }
