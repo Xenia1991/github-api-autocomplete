@@ -3,6 +3,7 @@ const form = document.querySelector('.searching-form');
 const input = form.querySelector('.searching-form__input');
 const respondList = document.querySelector('.respond-container');
 const resultSection = document.querySelector('.repos-container');
+let items = [];
 
 function createListItem (item) {
     const listItem = document.createElement('li');
@@ -47,13 +48,10 @@ function createReposList (item) {
 
 function selectMenuItem (event) {
     const target = event.target;
-    if (this.id === Number(target.id)) {
-        createReposList(this);
-        input.value = null;
-        respondList.setAttribute('data-hide', 'hidden');
-        respondList.innerHTML = null;
-    }
-    respondList.removeAttribute('data-hide');
+    const asd = items.find((item) => item.id === Number(target.id));
+    createReposList(asd);
+    input.value = null;
+    respondList.innerHTML = null;
 }
 
 function removeReposItem (event) {
@@ -61,19 +59,16 @@ function removeReposItem (event) {
     if (target.tagName !== 'BUTTON') {
         return;
     }
-    if (this.id === Number(target.id)) {
-        target.parentNode.remove()
-    }
+    target.parentNode.remove();
 }
 
-// function createMessage () {
-//     if (!input.value) {
-//         const message = document.createElement('span');
-//         message.textContent = `Введите имя репозитория`;
-//         form.append(message);
-//         respondList.innerHTML = null;
-//     }
-// }
+function clearValue () {
+    respondList.innerHTML = null;
+    if (respondList.children.length !== 0) {
+        respondList.innerHTML = null;
+        getValue();
+    } 
+}
 
 function debouncingInput (fn, debounceTime) {
     let timeout;
@@ -85,23 +80,18 @@ function debouncingInput (fn, debounceTime) {
 }
 
 async function getValue () {
-    try {
-        const queryValue = `q=${input.value.trim()}&per_page=5`;
-        const respond = await fetch(`https://api.github.com/search/repositories?${queryValue}`);
-        const repos = await respond.json();
-        repos.items.forEach((item) => {
-            createListItem(item);
-        });
-        const selectMenu = document.querySelector('.respond-container');
-        repos.items.forEach((item) => {
-            selectMenu.addEventListener('click', selectMenuItem.bind(item));
-            resultSection.addEventListener('click', removeReposItem.bind(item));
-        });
-    } catch (error) {
-        
-    }
+    const queryValue = `q=${input.value.trim()}&per_page=5`;
+    const respond = await fetch(`https://api.github.com/search/repositories?${queryValue}`);
+    const repos = await respond.json();
+    items = repos.items;
+    items.forEach((item) => {
+        createListItem(item);
+    });
 }
 
-const debouncingValue = debouncingInput(getValue, 1000);
+const debouncingValue = debouncingInput(getValue, 800);
 
 input.addEventListener('input', debouncingValue);
+resultSection.addEventListener('click', removeReposItem);
+respondList.addEventListener('click', selectMenuItem);
+input.addEventListener('input', clearValue);
