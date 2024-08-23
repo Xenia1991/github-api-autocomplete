@@ -51,7 +51,7 @@ function selectMenuItem (event) {
     const asd = items.find((item) => item.id === Number(target.id));
     createReposList(asd);
     input.value = null;
-    respondList.innerHTML = null;
+    respondList.textContent = null;
 }
 
 function removeReposItem (event) {
@@ -65,7 +65,7 @@ function removeReposItem (event) {
 function clearValue () {
     respondList.innerHTML = null;
     if (respondList.children.length !== 0) {
-        respondList.innerHTML = null;
+        respondList.textContent = null;
         getValue();
     } 
 }
@@ -92,9 +92,9 @@ async function getValue () {
     });
 }
 
-const debouncingValue = debouncingInput(getValue, 800);
+const debouncingValue = debouncingInput(getValue, 700);
 
 input.addEventListener('input', debouncingValue);
+input.addEventListener('input', clearValue);
 resultSection.addEventListener('click', removeReposItem);
 respondList.addEventListener('click', selectMenuItem);
-input.addEventListener('input', clearValue);
