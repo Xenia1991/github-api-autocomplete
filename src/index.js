@@ -18,9 +18,11 @@ function createReposList (item) {
 
     const reposItem = document.createElement('div');
     reposItem.classList.add('repos-container__item');
+    reposItem.setAttribute('id', `${item.id}`);
 
     const closeButton = document.createElement('button');
     closeButton.classList.add('repos-container__button');
+    closeButton.setAttribute('id', `${item.id}`);
 
     const infoWrapper = document.createElement('p');
     infoWrapper.classList.add('repos-container__wrapper');
@@ -43,6 +45,36 @@ function createReposList (item) {
     return infoWrapper;
 }
 
+function selectMenuItem (event) {
+    const target = event.target;
+    if (this.id === Number(target.id)) {
+        createReposList(this);
+        input.value = null;
+        respondList.setAttribute('data-hide', 'hidden');
+        respondList.innerHTML = null;
+    }
+    respondList.removeAttribute('data-hide');
+}
+
+function removeReposItem (event) {
+    const target = event.target;
+    if (target.tagName !== 'BUTTON') {
+        return;
+    }
+    if (this.id === Number(target.id)) {
+        target.parentNode.remove()
+    }
+}
+
+// function createMessage () {
+//     if (!input.value) {
+//         const message = document.createElement('span');
+//         message.textContent = `Введите имя репозитория`;
+//         form.append(message);
+//         respondList.innerHTML = null;
+//     }
+// }
+
 function debouncingInput (fn, debounceTime) {
     let timeout;
     return function () {
@@ -52,20 +84,10 @@ function debouncingInput (fn, debounceTime) {
     }
 }
 
-function selectMenuItem (event) {
-    const target = event.target;
-    if (this.id === Number(target.id)) {
-        createReposList(this);
-        input.value = null;
-        respondList.setAttribute('data-hide', 'hidden');
-        respondList.innerHTML = null;
-    }
-}
-
 async function getValue () {
-    const queryValue = `q=${input.value}&per_page=5`;
-    const respond = await fetch(`https://api.github.com/search/repositories?${queryValue}`);
-    if (respond.ok) {
+    try {
+        const queryValue = `q=${input.value.trim()}&per_page=5`;
+        const respond = await fetch(`https://api.github.com/search/repositories?${queryValue}`);
         const repos = await respond.json();
         repos.items.forEach((item) => {
             createListItem(item);
@@ -73,8 +95,10 @@ async function getValue () {
         const selectMenu = document.querySelector('.respond-container');
         repos.items.forEach((item) => {
             selectMenu.addEventListener('click', selectMenuItem.bind(item));
-            respondList.removeAttribute('data-hide');
+            resultSection.addEventListener('click', removeReposItem.bind(item));
         });
+    } catch (error) {
+        
     }
 }
 

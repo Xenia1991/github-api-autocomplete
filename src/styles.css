@@ -14,6 +14,7 @@
 .searching-form {
     width: 100%;
     height: auto;
+    padding-top: 10px;
 }
 
 .searching-form__input {
@@ -24,6 +25,7 @@
     font-size: 40px;
     padding: 5px 15px;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 .respond-container {
@@ -48,6 +50,7 @@
     padding: 5px 15px;
     box-sizing: border-box;
     cursor: pointer;
+    overflow: hidden;
 }
 
 .respond-container__item:hover {
@@ -59,7 +62,7 @@
     height: auto;
     list-style: none;
     margin: 0;
-    padding-top: 30px;
+    padding-top: 20px;
 }
 
 .repos-container__item {
