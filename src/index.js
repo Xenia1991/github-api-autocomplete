@@ -1,76 +1,73 @@
 const appContainer = document.querySelector('.app-container');
-const form = document.querySelector('.searching-form');
-const input = form.querySelector('.searching-form__input');
-const respondList = document.querySelector('.respond-container');
-const resultSection = document.querySelector('.repos-container');
-let items = [];
+const formContainer = document.querySelector('.searching-container');
+const inputElement = formContainer.querySelector('.searching-container__input');
+const responseContainer = document.querySelector('.response-container');
+const repositoriesContainer = document.querySelector('.repositories-container');
+let repositories = [];
 
-function createListItem (item) {
-    const listItem = document.createElement('li');
-    listItem.classList.add('respond-container__item');
-    listItem.textContent = item.name;
-    listItem.setAttribute('id', `${item.id}`)
-    respondList.append(listItem);
-    return respondList;
+function createListElement (repository) {
+    const listElement = document.createElement('li');
+    listElement.classList.add('response-container__item');
+    listElement.textContent = repository.name;
+    listElement.setAttribute('id', `${repository.id}`)
+    responseContainer.append(listElement);
+    return responseContainer;
 }
 
-function createReposList (item) {
-    const {owner} = item;
+function createRepositoryCard (repository) {
+    const {owner} = repository;
 
-    const reposItem = document.createElement('div');
-    reposItem.classList.add('repos-container__item');
-    reposItem.setAttribute('id', `${item.id}`);
+    const repositoryCard = document.createElement('div');
+    repositoryCard.classList.add('repositories-container__item');
+    repositoryCard.setAttribute('id', `${repository.id}`);
 
-    const closeButton = document.createElement('button');
-    closeButton.classList.add('repos-container__button');
-    closeButton.setAttribute('id', `${item.id}`);
+    const buttonElement = document.createElement('button');
+    buttonElement.classList.add('repositories-container__button');
+    buttonElement.setAttribute('id', `${repository.id}`);
 
-    const infoWrapper = document.createElement('p');
-    infoWrapper.classList.add('repos-container__wrapper');
+    const infoContainer = document.createElement('p');
+    infoContainer.classList.add('repositories-container__wrapper');
 
-    const reposListName = document.createElement('span');
-    reposListName.classList.add('repos-container__repo-info');
-    reposListName.textContent = `Name: ${item.name}`;
+    const nameElement = document.createElement('span');
+    nameElement.textContent = `Name: ${repository.name}`;
 
-    const reposListOwner = document.createElement('span');
-    reposListOwner.classList.add('repos-container__repo-info');
-    reposListOwner.textContent = `Owner: ${owner.login}`;
+    const ownerElement = document.createElement('span');
+    ownerElement.textContent = `Owner: ${owner.login}`;
 
-    const reposListStars = document.createElement('span');
-    reposListStars.classList.add('repos-container__repo-info');
-    reposListStars.textContent = `Stars: ${item.stargazers_count}`;
+    const starsElement = document.createElement('span');
+    starsElement.textContent = `Stars: ${repository.stargazers_count}`;
 
-    infoWrapper.append(reposListName, reposListOwner, reposListStars);
-    reposItem.append(infoWrapper, closeButton);
-    resultSection.append(reposItem);
-    return infoWrapper;
+    infoContainer.append(nameElement, ownerElement, starsElement);
+    repositoryCard.append(infoContainer, buttonElement);
+    repositoriesContainer.append(repositoryCard);
+    return infoContainer;
 }
 
-function selectMenuItem (event) {
-    const target = event.target;
-    const asd = items.find((item) => item.id === Number(target.id));
-    createReposList(asd);
-    input.value = null;
-    respondList.textContent = null;
+function selectMenuItem (evt) {
+    const target = evt.target;
+    const targetRepository = repositories.find((repository) => repository.id === Number(target.id));
+    createRepositoryCard(targetRepository);
+    inputElement.value = null;
+    responseContainer.textContent = null;
 }
 
-function removeReposItem (event) {
-    const target = event.target;
+function removeRepositoryCard (evt) {
+    const target = evt.target;
     if (target.tagName !== 'BUTTON') {
         return;
     }
     target.parentNode.remove();
 }
 
-function clearValue () {
-    respondList.innerHTML = null;
-    if (respondList.children.length !== 0) {
-        respondList.textContent = null;
-        getValue();
+function clearResponseContainer () {
+    responseContainer.innerHTML = null;
+    if (responseContainer.children.length !== 0) {
+        responseContainer.textContent = null;
+        getRepositories();
     } 
 }
 
-function debouncingInput (fn, debounceTime) {
+function debouncingInputElement (fn, debounceTime) {
     let timeout;
     return function () {
         const event = () => {fn.apply(this, arguments)};
@@ -79,22 +76,22 @@ function debouncingInput (fn, debounceTime) {
     }
 }
 
-async function getValue () {
-    if (!input.value.trim()) {
+async function getRepositories () {
+    if (!inputElement.value.trim()) {
         return;
     }
-    const queryValue = `q=${input.value.trim()}&per_page=5`;
-    const respond = await fetch(`https://api.github.com/search/repositories?${queryValue}`);
-    const repos = await respond.json();
-    items = repos.items;
-    items.forEach((item) => {
-        createListItem(item);
+    const queryValue = `q=${inputElement.value.trim()}&per_page=5`;
+    const response = await fetch(`https://api.github.com/search/repositories?${queryValue}`);
+    const reposObj = await response.json();
+    repositories = reposObj.items;
+    repositories.forEach((repository) => {
+        createListElement(repository);
     });
 }
 
-const debouncingValue = debouncingInput(getValue, 700);
+const debouncedInputHandler = debouncingInputElement(getRepositories, 800);
 
-input.addEventListener('input', debouncingValue);
-input.addEventListener('input', clearValue);
-resultSection.addEventListener('click', removeReposItem);
-respondList.addEventListener('click', selectMenuItem);
+inputElement.addEventListener('input', debouncedInputHandler);
+inputElement.addEventListener('input', clearResponseContainer);
+repositoriesContainer.addEventListener('click', removeRepositoryCard);
+responseContainer.addEventListener('click', selectMenuItem);

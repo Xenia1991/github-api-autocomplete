@@ -10,12 +10,12 @@
     justify-content: space-evenly;
 }
 
-.searching-form {
+.searching-container {
     width: 100%;
     height: auto;
 }
 
-.searching-form__input {
+.searching-container__input {
     width: 100%;
     line-height: 50px;
     font-size: 40px;
@@ -24,7 +24,7 @@
     border-radius: 20px;
 }
 
-.respond-container {
+.response-container {
     width: 100%;
     height: auto;
     background-color: white;
@@ -32,7 +32,7 @@
     border-radius: 25px;
 }
 
-.respond-container__item {
+.response-container__item {
     width: 100%;
     border: 0.5px solid #379683;
     font-size: 30px;
@@ -40,31 +40,31 @@
     box-sizing: border-box;
 }
 
-.respond-container__item:first-child {
+.response-container__item:first-child {
     border-top-left-radius: 25px;
     border-top-right-radius: 25px;
 }
-.respond-container__item:last-child {
+.response-container__item:last-child {
     border-bottom-right-radius: 25px;
     border-bottom-left-radius: 25px;
 }
 
-.respond-container__item:hover {
+.response-container__item:hover {
     background-color: #EDF5E1;
 }
 
-.repos-container__wrapper {
+.repositories-container__wrapper {
     display: flex;
     flex-direction: column;
 }
 
-.repos-container {
+.repositories-container {
     width: 100%;
     height: auto;
     padding-top: 20px;
 }
 
-.repos-container__item {
+.repositories-container__item {
     width: 100%;
     height: auto;
     display: flex;
@@ -81,7 +81,7 @@
     font-size: 24px;
 }
 
-.repos-container__button {
+.repositories-container__button {
     width: 70px;
     height: 70px;
     background-color: transparent;
@@ -90,6 +90,6 @@
     transition-duration: 400ms;
 }
 
-.repos-container__button:hover {
+.repositories-container__button:hover {
     transform: rotate(180deg);
 }
