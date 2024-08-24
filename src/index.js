@@ -80,7 +80,7 @@ async function getRepositories () {
     if (!inputElement.value.trim()) {
         return;
     }
-    const queryValue = `q=${inputElement.value.trim()}&per_page=5`;
+    const queryValue = `q=${inputElement.value.trim()}&per_page=5&order=desc`;
     const response = await fetch(`https://api.github.com/search/repositories?${queryValue}`);
     const reposObj = await response.json();
     repositories = reposObj.items;
