@@ -97,5 +97,5 @@
 }
 
 .repositories-container__button:hover {
-    transform: rotate(180deg);
+    transform: scale(1.05);
 }
